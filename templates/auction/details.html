@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container">
+        <h1 class="display-3 text-center my-3">{{ auction.title }}</h1>
+        <div class="row my-3">
+            <div class="col col-sm-9 col-lg-6 mx-auto my-3">
+                <img src="{{ auction.image.url }}"
+                     alt="{{ auction.title }}"
+                     class="img-fluid"
+                     style="max-height: 480px;"
+                >
+            </div>
+
+            <div class="col col-sm-9 col-lg-6 mx-auto my-3">
+                <p><span class="font-weight-bold">Added by: </span>{{ auction.seller.first_name }}</p>
+                <p><span class="font-weight-bold">Added at: </span>{{ auction.created_at }}</p>
+                <p><span class="font-weight-bold">Expires at: </span>{{ auction.end_time }}</p>
+                <p><span class="font-weight-bold">Details: </span>{{ auction.description }}</p>
+
+                <p><span class="font-weight-bold">Current Quote: </span>{{ auction.price }}</p>
+
+                {% if auction.seller != auction.buyer %}
+                    <p><span class="font-weight-bold">Current Bidder: </span>{{ auction.buyer.first_name }}</p>
+                {% else %}
+                    <p><span class="font-weight-bold">Current Quote: </span>No quote yet.</p>
+                    {% if allow_buying and bid_going_on %} <p>Be the first one to bid for this item!</p> {% endif %}
+                {% endif %}
+
+                {% if bid_going_on  %}
+                    {% if allow_bidding %}
+                        <form class="form-inline justify-content"
+                              method="post"
+                              action="{% url 'show_details' auction.pk %}"
+                        >
+                            {% csrf_token %}
+                            <label class="my-1 mr-2" for="id_amount">Quote a Price: </label>
+                            <input type="number" name="amount" step="0.01" required id="id_amount"
+                                   class="my-1 mr-sm-2"
+                            >
+                            <button type="submit" class="btn btn-primary my-1">Submit</button>
+                        </form>
+                        <p>Need to know something? <a href="{% url 'write_to' auction.seller.pk %}">Contact Seller</a></p>
+                    {% endif %}
+                {% else %}
+                    {% if auction.sold %}
+
+                        {% if allow_buying %}
+                            <p class="font-weight-bold">You have baught the item.</p>
+                        {% else %}
+                            <p class="font-weight-bold">The item is sold.</p>
+                        {% endif %}
+
+                    {% else %}
+
+                        {% if auction.buyer == user %}
+                            <p class="font-weight-bold">Congratulations! You won the bid!</p>
+                            <a href="{% url 'buy_item' auction.pk %}" class="btn btn-block btn-success my-3">Buy the item!</a>
+                            <p>Need to know something? <a href="{% url 'write_to' auction.seller.pk %}">Contact Seller</a></p>
+                        {% endif %}
+                    {% endif %}
+
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

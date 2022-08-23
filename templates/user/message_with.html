@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %} Message {% endblock %}
+{% block content %}
+    <div class="container my-3">
+        <p class="font-weight-bold">Your Messages with {{ to_user.first_name }}</p>
+        <ul>
+            {% for message in all_messages %}
+                <li><span class="font-weight-bold">{{ message.sender.first_name }} at {{ message.sent_at }}:</span>
+                    at {{ message.message }}</li>
+            {% endfor %}
+        </ul>
+        <p class="font-weight-bold">Send a new message:</p>
+        <form class="form-group justify-content"
+              method="post"
+              action="#"
+        >
+            {% csrf_token %}
+            <textarea name="message" rows="2" maxlength="1024" required id="id_message"
+                      class="form-control"
+            ></textarea>
+            <button type="submit" class="btn btn-primary btn-block my-3">Submit</button>
+        </form>
+    </div>
+{% endblock %}

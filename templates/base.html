@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+
+        <!-- Required meta tags -->
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no"
+        />
+
+        <!-- Bootstrap CSS -->
+        <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+            integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+            crossorigin="anonymous"
+        />
+        <link
+            href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css"
+            type="text/css"
+            rel="stylesheet"
+        />
+
+        {% block head %}
+        {% endblock %}
+
+        <title>{% block title %} OhAuth {% endblock %}</title>
+
+    </head>
+    <body>
+
+        <!-- showing alerts if any is passed -->
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <script>
+                        alert('{{ message }}')
+                    </script>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <!-- Navigation bar starts here -->
+        <div style="background-color: #1E4B34;">
+            <div class="container">
+                <nav class="navbar navbar-dark navbar-expand-lg">
+                    <button
+                        class="navbar-toggler"
+                        type="button"
+                        data-toggle="collapse"
+                        data-target="#navbarToggler"
+                        aria-controls="navbarToggler"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation">
+
+                        <span
+                            class="navbar-toggler-icon"
+                            style="color: antiquewhite">
+                        </span>
+                    </button>
+                    <a class="navbar-brand" href="{% url 'homepage' %}"><strong>E-Auction</strong></a>
+
+                    <div class="collapse navbar-collapse" id="navbarToggler">
+                        <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'show_ended' %}">Closed Auctions</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'show_upcoming' %}">Buy</a>
+                            </li>
+
+                            <!-- If the user is not logged in -->
+                            {% if not user.is_authenticated %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'register' %}">Register</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'login' %}">Login</a>
+                                </li>
+
+                            <!-- If the user is logged in -->
+                            {% else %}
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'add_auction' %}">Sell</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'message' %}">Messages({{ message_cnt }})</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        </div>
+        <!-- Navigation bar ends here -->
+
+        <!-- Actual page content -->
+        <div class="container">
+            {% block content %} {% endblock %}
+
+
+
+        </div>
+
+        <br>
+        <br>
+        <br>
+
+        <!-- Footer -->
+        <!-- Footer -->
+        <footer class="page-footer font-small teal pt-4 navbar-fixed-bottom"
+        >
+          <div class="container-fluid text-center text-md-left">
+            <div class="container">
+                <div class="row">
+
+                  <!-- Grid column -->
+                  <div class="col-md-6 mt-md-0 mt-3">
+                    <!-- Content -->
+                    <h5 class="text-uppercase font-weight-bold">About Us</h5>
+                    <p>This project was made as a part of our coursework of ECS639U- WEB PROGRAMMING by Group No 45</p>
+                  </div>
+                  <!-- Grid column -->
+
+                  <hr class="clearfix w-100 d-md-none pb-3">
+
+                  <!-- Grid column -->
+                  <div class="col-md-6 mb-md-0 mb-3">
+                      <ul class="list-group list-group-flush">
+                          <p class="font-weight-bold">Important Links</p>
+                          <li class="list-group-item">
+                              <a href="{% url 'show_upcoming' %}">Buy Items</a>
+                          </li>
+                          <li class="list-group-item">
+                              <a href="{% url 'show_ended' %}">Closed Listings</a>
+                          </li>
+                      </ul>
+                  </div>
+                  <!-- Grid column -->
+
+                </div>
+                <!-- Grid row -->
+            </div>
+
+          </div>
+          <!-- Footer Text -->
+
+          <!-- Copyright -->
+          <div class="footer-copyright text-center py-3">© 2019, All rights reserved</div>
+          <!-- Copyright -->
+
+        </footer>
+        <!-- Footer -->
+
+        <!-- Optional JavaScript -->
+        <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+        <script
+            src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous">
+        </script>
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous">
+        </script>
+        <script
+            src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous">
+        </script>
+    {% block script %}
+    {% endblock %}
+    </body>
+</html>

@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %} Messages {% endblock %}
+
+{% block content %}
+
+    <div class="container my-3">
+        {% if unseen_wins %}
+            <p class="font-weight-bold">You have {{ unseen_wins_len }} unread notifications</p>
+            <ol>
+                {% for auction in unseen_wins %}
+                    <li>Congratulations! You have won bid for {{ auction.title }}!
+                        <a href="{% url 'show_details' auction.pk %}">Buy item</a>
+                    </li>
+                {% endfor %}
+            </ol>
+        {% endif %}
+
+        {% if seen_wins %}
+            <p class="font-weight-bold">Older system messages:</p>
+            <ol>
+                {% for auction in seen_wins %}
+                    <li>Congratulations! You have won bid for {{ auction.title }}!
+                        <a href="{% url 'show_details' auction.pk %}">See details</a>
+                    </li>
+                {% endfor %}
+            </ol>
+        {% endif %}
+
+        {% if unread_messages %}
+            <p class="font-weight-bold">Unread messages:</p>
+            <ol>
+                {% for message in unread_messages %}
+                    <li> <span class="font-weight-bold">{{ message.sender.first_name }} at {{ message.sent_at }}:</span>
+                        {{ message.message }} <a href="{% url 'write_to' message.sender.pk %}">View Conversation</a>
+                {% endfor %}
+            </ol>
+        {% endif %}
+
+        {% if read_messages %}
+            <p class="font-weight-bold">Older messages:</p>
+            <ol>
+                {% for message in read_messages %}
+                    <li> <span class="font-weight-bold">{{ message.sender.first_name }} at {{ message.sent_at }}:</span>
+                        {{ message.message }} <a href="{% url 'write_to' message.sender.pk %}">View Conversation</a>
+                {% endfor %}
+            </ol>
+        {% endif %}
+
+    </div>
+
+{% endblock %}

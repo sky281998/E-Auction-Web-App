@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% block title %} {{ title }} {% endblock %}
+
+{% block content %}
+
+    <div class="container my-3">
+        <form id="id_form" action="#" method="get">
+            <div class="input-group">
+                <input
+                        id="id_search_text"
+                        type="text"
+                        class="form-control"
+                        placeholder="Type your search query here"
+                />
+                <div class="input-group-prepend">
+                    <button type="submit" class="btn btn-success">
+                        <i class="fa fa-search" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="cointainer" id="results">
+        <div class="row my-3">
+            {% for auction in auctions %}
+                <div class="col col-sm col-md-6 col-lg-3 my-3 mx-3">
+                    <div class="card" style="width: 18rem;">
+                        <img src="{{ auction.image.url }}" class="card-img-top" height="300px" alt="{{ auction.title }}">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ auction.title }}</h5>
+                            <p>{{ auction.description }}</p>
+                            {% if auction.sold %}
+                                <p><span class="font-weight-bold">Sold for: </span>{{ auction.price }}</p>
+                            {% elif auction.price %}
+                                <p><span class="font-weight-bold">Current bid: </span>{{ auction.price }}</p>
+                            {% else %}
+                                <p><span class="font-weight-bold">Current bid: </span>No bid yet.</p>
+                            {% endif %}
+
+                            <a href="/auction/details/{{ auction.pk }}/" class="btn btn-primary btn-block">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+{% endblock %}
+
+{% block script %}
+        <script>
+
+        document.getElementById("id_form").addEventListener("submit", event => {
+            let searchText = document.getElementById("id_search_text").value;
+            searchText = searchText
+                .replace(/([^0-9a-z])/gi, " ")
+                .split(" ")
+                .join("+");
+
+            const url = `http://${window.location.host}/auction/search/${searchText}`;
+
+            let resultElement = document.getElementById('results');
+            console.log(resultElement);
+            let newHtml = `
+            <div class="cointainer my-3" id="results">
+                <div class="row my-3">`;
+
+            try {
+                fetch(url).then(res => res.json())
+                    .then(res => {
+
+                        if (JSON.parse(res).length === 0) {
+                            resultElement.innerHTML = `
+                                <div class="cointainer" id="result">
+                                    <br><br><br>
+                                    <p class="font-weight-bold text-content-center">
+                                        Ops! Could not find any match for your searched keywords! Try some other keyword instead?
+                                    </p>
+                                    <br><br><br>
+                                </div>
+                            `;
+                            return;
+                        }
+
+                        for (let a of JSON.parse(res)) {
+                            newHtml += `
+                                        <div class="col col-sm col-md-6 col-lg-3 my-3 mx-3" id="result">
+                                            <div class="card" style="width: 18rem;">
+                                                <img src="http://${window.location.host}/media/${a.fields.image}" class="card-img-top" alt="${a.fields.title}" height="300px" />
+                                                <div class="card-body">
+                                                    <h5 class="card-title">${a.fields.title}</h5>
+                                                    <p>${a.fields.description}</p>`;
+                            if (a.fields.sold) {
+                                newHtml += `<p> <span class="font-weight-bold">Sold for: </span>${a.fields.price} </p>`;
+                            } else if (a.fields.price) {
+                                newHtml += `<p> <span class="font-weight-bold">Current bid: </span>${a.fields.price} </p>`;
+                            } else {
+                                newHtml += `<p><span class="font-weight-bold">Current bid: </span>No bid yet. </p>`;
+                            }
+                            newHtml +=              `<a href="/auction/details/${a.fields.pk}/" class="btn btn-primary btn-block">View Details</a>
+                                                </div>
+                                            </div>
+                                        </div>`;
+                        }
+
+                        newHtml += `
+                                    </div>
+                                </div>`;
+
+                        resultElement.innerHTML = newHtml;
+                    }).catch(error => {
+                        resultElement.innerHTML = `
+                                <div class="cointainer">
+                                    <br><br><br>
+                                    <p class="font-weight-bold text-content-center">
+                                        Couldn't get response from the server.
+                                    </p>
+                                    <br><br><br>
+                                </div>
+               `;
+                });
+            } catch (e) {
+            }
+
+            event.preventDefault();
+        });
+
+    </script>
+{% endblock %}

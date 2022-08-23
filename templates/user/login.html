@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block title %} Login {% endblock %}
+{% block content %}
+    <div class="container text-center">
+        <div
+            class="col-sm-12 col-md-8 col-lg-6 p-sm-1 p-md-2 p-lg-3 align-center mt-3"
+            style="margin: auto;">
+            <h1 class="display-5 mt-3">Login to your account!</h1>
+            <p class="mt-1">Please enter the following information</p>
+
+            <!-- Login form -->
+            <form action="{% url 'login'%}" method="post" id="id_login-form">
+                {% csrf_token %}
+
+                <!-- Email input -->
+                <div class="form-group text-left mb-3">
+                    <label for="id_email">Email address</label>
+                    <input
+                        id="id_email"
+                        name="email"
+                        class="form-control"
+                        type="email"
+                        placeholder="email@example.com"
+                        required
+                    />
+                </div>
+                <!-- Email input ends -->
+
+                <!-- Password input -->
+                <div class="form-group text-left mb-3">
+                    <label for="id_password">Password</label>
+                    <input
+                        id="id_password"
+                        name="password"
+                        class="form-control"
+                        type="password"
+                        placeholder="****************"
+                        required
+                    />
+                </div>
+                <!-- Password input ends -->
+
+                <!-- Submit button -->
+                <button class="btn btn-block btn-primary" type="submit">
+                    Login
+                </button>
+            </form>
+            <!-- Login form ends -->
+
+            <p class="mute my-3">Don't have an account? <a href="{% url 'register' %}">Register here</a></p>
+        </div>
+    </div>
+{% endblock %}
